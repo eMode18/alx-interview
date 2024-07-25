@@ -1,14 +1,16 @@
 #!/usr/bin/python3
 """
 Change starts from Within
+"""
 
-This function calculates the fewest number of coins needed to meet a
+
+def makeChange(coins, total):
+    """
+    This function calculates the fewest number of coins needed to meet a
 given total amount.
 Given a pile of coins of different values, it determines the optimal
 combination of coins.
-"""
-
-def makeChange(coins, total):
+    """
     if total <= 0:
         return 0
 
