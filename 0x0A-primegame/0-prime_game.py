@@ -1,77 +1,44 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
-Prime Game: Maria vs. Ben
-
-Maria and Ben play a game where they take turns choosing prime numbers
-from a set of consecutive integers.
-The player who cannot make a move (no more prime numbers left) loses the game.
-
-Rules:
-1. Start with a set of integers from 1 up to and including a given number, n.
-2. On each turn, a player selects a prime number and removes it along with
-its multiples.
-3. Determine the winner based on optimal play.
+Define the isWinner function to solve the Prime Game problem.
 """
+
+
+def primes(n):
+    """Generate a list of prime numbers from 1 to n (inclusive).
+       Args:
+        n (int): The upper limit of the range. The lower limit is always 1.
+    """
+    prime_numbers = []
+    is_prime = [True] * (n + 1)
+    for num in range(2, n + 1):
+        if is_prime[num]:
+            prime_numbers.append(num)
+            for multiple in range(num, n + 1, num):
+                is_prime[multiple] = False
+    return prime_numbers
 
 
 def isWinner(x, nums):
-    def is_prime(num):
-        if num < 2:
-            return False
-        for i in range(2, int(num**0.5) + 1):
-            if num % i == 0:
-                return False
-        return True
-
-    def get_next_prime(start):
-        while True:
-            start += 1
-            if is_prime(start):
-                return start
-
-    def play_game(n):
-        # Initialize a list to keep track of available numbers
-        available_numbers = [True] * (n + 1)
-        available_numbers[0] = available_numbers[1] = False
-
-        # Maria starts
-        maria_turn = True
-
-        while True:
-            prime = get_next_prime(1)
-            found = False
-
-            # Find the next available prime
-            while prime <= n:
-                if available_numbers[prime]:
-                    found = True
-                    break
-                prime = get_next_prime(prime)
-
-            if not found:
-                # No more primes left
-                return "Ben" if maria_turn else "Maria"
-
-            # Remove prime and its multiples
-            for i in range(prime, n + 1, prime):
-                available_numbers[i] = False
-
-            # Switch turns
-            maria_turn = not maria_turn
-
-    # Play x rounds and keep track of wins
-    maria_wins = ben_wins = 0
-    for n in nums:
-        winner = play_game(n)
-        if winner == "Maria":
-            maria_wins += 1
-        elif winner == "Ben":
-            ben_wins += 1
-
-    # Determine overall winner
-    if maria_wins > ben_wins:
-        return "Maria"
-    elif ben_wins > maria_wins:
-        return "Ben"
-    else:
+    """
+    Determine the winner of the Prime Game.
+    Args:
+        x (int): Number of rounds in the game.
+        nums (list of int): List of upper limits for each round.
+    Return:
+        str: The name of the winner ('Maria' or 'Ben'), or None if no winner.
+    """
+    if not x or not nums:
         return None
+    maria_score = ben_score = 0
+    for round_index in range(x):
+        prime_list = primes(nums[round_index])
+        if len(prime_list) % 2 == 0:
+            ben_score += 1
+        else:
+            maria_score += 1
+    if maria_score > ben_score:
+        return 'Maria'
+    elif ben_score > maria_score:
+        return 'Ben'
+    return None
